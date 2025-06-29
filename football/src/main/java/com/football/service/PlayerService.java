@@ -5,10 +5,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.football.entities.Player;
 import com.football.repo.PlayerRepository;
 
+import jakarta.transaction.Transactional;
+
+@Component
 public class PlayerService {
     
     private final PlayerRepository playerRepository;
@@ -43,7 +47,7 @@ public class PlayerService {
             .collect(Collectors.toList());
     }
 
-    public List<Player> gePlayersByNation(String searchText){
+    public List<Player> getPlayersByNation(String searchText){
         return playerRepository.findAll().stream()
             .filter(player -> player.getNation().toLowerCase().contains(searchText.toLowerCase()))
             .collect(Collectors.toList());
@@ -74,5 +78,10 @@ public class PlayerService {
             return playerToUpdate;
         }
         return null;
+    }
+
+    @Transactional
+    public void deletePlayer(String playerName){
+        playerRepository.deleteByName(playerName);
     }
 }
